@@ -30,3 +30,19 @@ VolumeView.prototype.drawGrid = function ()
         this.surface.output.sendCC (LAUNCHPAD_FADER_1 + i, track.volume);
     }
 };
+
+VolumeView.prototype.updateSceneButtons = function (buttonID)
+{
+    var track = this.model.getMasterTrack ();
+    var sceneMax = Math.floor (9 * track.volume / Config.maxParameterValue);
+    for (var i = 0; i < 8; i++)
+        this.surface.setButton (LAUNCHPAD_BUTTON_SCENE8 + 10 * i, i < sceneMax && track.color != null ? track.color : LAUNCHPAD_COLOR_BLACK);
+};
+
+VolumeView.prototype.onScene = function (scene, event)
+{
+    if (!event.isDown ())
+        return;
+    var track = this.model.getMasterTrack ();
+    track.setVolume (Math.min (127, Math.floor ((7 - scene) * Config.maxParameterValue / 7)));
+};
